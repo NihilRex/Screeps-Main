@@ -27,23 +27,23 @@ module.exports = {
                 // try to transfer energy, if it is not in range
                 if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     // move towards it
-                    creep.moveTo(structure), [{reusePath}];
+                    creep.moveTo(structure), [{reusePath:12}];
                 }
             }
         }
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
-            var conta = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            var conta = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     // the second argument for findClosestByPath is an object which takes
                     // a property called filter which can be a function
                     // we use the arrow operator to define it
-                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.energy >= 2
+                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
         });
             // try to harvest energy, if the source is not in range
             if (creep.withdraw(conta, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(conta), [{reusePath}];
+                creep.moveTo(conta);
             }
         }
     }

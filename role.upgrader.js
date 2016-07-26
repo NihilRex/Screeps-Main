@@ -14,31 +14,27 @@ module.exports = {
 
         // if creep is supposed to transfer energy to the controller
         if (creep.memory.working == true) {
-            var Mcontroller = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-                    // the second argument for findClosestByPath is an object which takes
-                    // a property called filter which can be a function
-                    // we use the arrow operator to define it
-                    filter: (s) => s.structureType = STRUCTURE_CONTROLLER
-        });
-
+            // instead of upgraderController we could also use:
+            // if (creep.transfer(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 
             // try to upgrade the controller
-            if (creep.upgradeController(Mcontroller) == ERR_NOT_IN_RANGE) {
+            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 // if not in range, move towards the controller
-                creep.moveTo(Mcontroller);
+                creep.moveTo(creep.room.controller);
             }
         }
         // if creep is supposed to harvest energy from source
-        else {
+                else {
             // find closest source
-            var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            var conta = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    // the second argument for findClosestByPath is an object which takes
+                    // a property called filter which can be a function
+                    // we use the arrow operator to define it
+                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+        });
             // try to harvest energy, if the source is not in range
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            if (creep.withdraw(conta, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(source);
+                creep.moveTo(conta);
             }
-        }
-    }
-};
-filter: (s) => s.my == true
-
+}}};

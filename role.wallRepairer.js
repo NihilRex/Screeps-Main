@@ -22,26 +22,15 @@ module.exports = {
             });
 
             var target = undefined;
+            var targetPercent = 1;
 
-            // loop with increasing percentages
-            for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
-                // find a wall with less than percentage hits
-
-                // for some reason this doesn't work
-                // target = creep.pos.findClosestByPath(walls, {
-                //     filter: (s) => s.hits / s.hitsMax < percentage
-                // });
-
-                // so we have to use this
-                target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType == STRUCTURE_WALL &&
-                                   s.hits / s.hitsMax < percentage
-                });
-
-                // if there is one
-                if (target != undefined) {
-                    // break the loop
-                    break;
+            // Loop through all walls/ramparts searching for
+            //   the lowwest percentage compared to max hits
+            // Does not take into account how close it is
+            for(let potentialTarget in walls) {
+                if((targets.hits / targets.hitsMax) < targetPercent) {
+                    targetPercent = (potentialTarget.hits / potentialTarget.hitsMax);
+                    target = potentialTarget;
                 }
             }
 
@@ -62,14 +51,16 @@ module.exports = {
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
-            var source = creep.pos.findClosestByPath(FIND_SOURCES, {
-                filter: (s) => s.energy > 0
-            });
+            var conta = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+                    // the second argument for findClosestByPath is an object which takes
+                    // a property called filter which can be a function
+                    // we use the arrow operator to define it
+                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.energy >= 2
+        });
             // try to harvest energy, if the source is not in range
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            if (creep.withdraw(conta, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(source);
+                creep.moveTo(conta), [{reusePath}];
             }
-        }
-    }
-};
+
+}}};

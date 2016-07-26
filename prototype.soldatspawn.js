@@ -5,7 +5,7 @@ module.exports = function() {
             // create a balanced body as big as possible with the given energy
             var numberOfPartsC = Math.floor(energy / 180);
             var body = [];
-            if (numberOfPartsC >= 7) {numberOfParts = 6} else numberOfParts = numberOfPartsC;
+            if (numberOfPartsC >= 7) {numberOfParts = 6} else {var numberOfParts = numberOfPartsC;}
             for (let i = 0; i < numberOfParts; i++) {
                 body.push(TOUGH);
             }

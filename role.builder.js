@@ -17,13 +17,13 @@ module.exports = {
         // if creep is supposed to complete a constructionSite
         if (creep.memory.working == true) {
             // find closest constructionSite
-            var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+            var constructionSite = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
             // if one is found
             if (constructionSite != undefined) {
                 // try to build, if the constructionSite is not in range
                 if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
                     // move towards the constructionSite
-                    creep.moveTo(constructionSite), [{reusePath}];
+                    creep.moveTo(constructionSite);
                 }
             }
             // if no constructionSite is found
@@ -35,11 +35,11 @@ module.exports = {
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
-            var source = creep.pos.findClosestByPath(FIND_SOURCES);
+            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
             // try to harvest energy, if the source is not in range
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(source), [{reusePath}];
+                creep.moveTo(source);
             }
         }
     }

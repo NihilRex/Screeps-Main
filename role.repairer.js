@@ -19,7 +19,7 @@ module.exports = {
             // find closest structure with less than max hits
             // Exclude walls because they have way too many max hits and would keep
             // our repairers busy forever. We have to find a solution for that later.
-            var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            var structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 // the second argument for findClosestByPath is an object which takes
                 // a property called filter which can be a function
                 // we use the arrow operator to define it
@@ -43,7 +43,7 @@ module.exports = {
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
-            var source = creep.pos.findClosestByPath(FIND_SOURCES);
+            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
             // try to harvest energy, if the source is not in range
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 // move towards the source

@@ -1,8 +1,8 @@
-// import modules
 require('prototype.spawn')();
 require('prototype.soldatspawn')();
 require('prototype.medicspawn')();
 require('prototype.courierspawn')();
+require('prototype.minerspawn')();
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -13,7 +13,6 @@ var roleHealer = require('role.healer');
 var roleEminer = require('role.eminer');
 var roleCourier = require('role.courier');
 var roleCargo = require('role.cargo');
-
 module.exports.loop = function () {
     // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
@@ -24,7 +23,7 @@ module.exports.loop = function () {
         }
     }
 
-    var tower = Game.getObjectById('57953dd0c518fb4b1743b669');
+    var tower = Game.getObjectById('4a337b70319ce0376d17780e');
     if(tower) {
         var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(closestHostile) {
@@ -72,17 +71,19 @@ module.exports.loop = function () {
             roleCargo.run(creep);
         }
     }
-;
+
 
 // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
     var minimumNumberOfBuilders = 1;
     var minimumNumberOfRepairers = 1;
-    var minimumNumberOfWallRepairers = 2;
+    var minimumNumberOfWallRepairers = 1;
     var minimumNumberOfSoldats = 4;
     var minimumNumberOfHealers = 2;
     var minimumNumberOfCouriers = 2;
+    var minimumNumberOfCargos = 1;
+    var minimumNumberOfMiners = 2;
 
 
 
@@ -96,6 +97,9 @@ module.exports.loop = function () {
     var numberOfWallRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'wallRepairer');
     var numberOfSoldats = _.sum(Game.creeps, (c) => c.memory.role == 'soldat');
     var numberOfHealers = _.sum(Game.creeps, (c) => c.memory.role == 'healer');
+    var numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'eminer');
+    var numberOfCargo = _.sum(Game.creeps, (c) => c.memory.role == 'cargo');
+    var numberOfCouriers = _.sum(Game.creeps, (c) => c.memory.role == 'courier');
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var name = undefined;
 
@@ -131,6 +135,18 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'wallRepairer');
     }
+    else if (numberOfMiners < minimumNumberOfMiners) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createMiner(energy, 'eminer');
+    }
+    else if (numberOfCargo < minimumNumberOfCargos) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createCourier(energy, 'cargo');
+    }
+    else if (numberOfCouriers < minimumNumberOfCouriers) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createCourier(energy, 'courier');
+    }
     else if (numberOfSoldats < minimumNumberOfSoldats) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomAttackCreep(energy, 'soldat');
@@ -139,16 +155,7 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomMedicCreep(energy, 'healer');
     }
-    else if (numberOfMiners < minimumNumberOfMiners) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomMiner(energy, 'eminer');
-    }else if (numberOfCargo < minimumNumberOfCargos) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCourier(energy, 'cargo');
-    }else if (numberOfCourier < minimumNumberOfCouriers) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCourier(energy, 'courier');
-    }
+
     else {
         // else try to spawn a builder
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder');
