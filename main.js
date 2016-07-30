@@ -1,3 +1,4 @@
+require('prototype.claimerspawn')();
 require('prototype.spawn')();
 require('prototype.soldatspawn')();
 require('prototype.medicspawn')();
@@ -13,6 +14,8 @@ var roleHealer = require('role.healer');
 var roleEminer = require('role.eminer');
 var roleCourier = require('role.courier');
 var roleCargo = require('role.cargo');
+var roleClaimer = require('role.claimer');
+var roleTraveler = require('role.traveler');
 module.exports.loop = function () {
     // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
@@ -22,12 +25,15 @@ module.exports.loop = function () {
             delete Memory.creeps[name];
         }
     }
-
-    var tower = Game.getObjectById('4a337b70319ce0376d17780e');
-    if(tower) {
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
+    var towers = _.filter(Game.structures, (str) => {return str.structureType === STRUCTURE_TOWER}
+    )
+    ;
+    for (var tower of towers) {
+        if (tower) {
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if (closestHostile) {
+                tower.attack(closestHostile);
+            }
         }
     }
     // for every creep name in Game.creeps
@@ -70,36 +76,62 @@ module.exports.loop = function () {
         else if (creep.memory.role == 'cargo') {
             roleCargo.run(creep);
         }
+        else if (creep.memory.role == 'claimer') {
+            roleClaimer.run(creep);
+        }
+        else if (creep.memory.role == 'traveler') {
+            roleTraveler.run(creep);
+        }
+
     }
 
 
 // setup some minimum numbers for different roles
-    var minimumNumberOfHarvesters = 3;
+    var minimumNumberOfHarvesters = 2;
     var minimumNumberOfUpgraders = 1;
     var minimumNumberOfBuilders = 1;
     var minimumNumberOfRepairers = 1;
-    var minimumNumberOfWallRepairers = 1;
-    var minimumNumberOfSoldats = 4;
-    var minimumNumberOfHealers = 2;
+    var minimumNumberOfWallRepairers = 0;
+    var minimumNumberOfSoldats = 2;
+    var minimumNumberOfHealers = 0;
     var minimumNumberOfCouriers = 2;
-    var minimumNumberOfCargos = 1;
+    var minimumNumberOfCargos = 3;
     var minimumNumberOfMiners = 2;
-
 
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the
     //  arrow function, which checks for the creep being a harvester
-    var numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
-    var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
-    var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-    var numberOfRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'repairer');
-    var numberOfWallRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'wallRepairer');
-    var numberOfSoldats = _.sum(Game.creeps, (c) => c.memory.role == 'soldat');
-    var numberOfHealers = _.sum(Game.creeps, (c) => c.memory.role == 'healer');
-    var numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'eminer');
-    var numberOfCargo = _.sum(Game.creeps, (c) => c.memory.role == 'cargo');
-    var numberOfCouriers = _.sum(Game.creeps, (c) => c.memory.role == 'courier');
+    var numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester'
+    )
+    ;
+    var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader'
+    )
+    ;
+    var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder'
+    )
+    ;
+    var numberOfRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'repairer'
+    )
+    ;
+    var numberOfWallRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'wallRepairer'
+    )
+    ;
+    var numberOfSoldats = _.sum(Game.creeps, (c) => c.memory.role == 'soldat'
+    )
+    ;
+    var numberOfHealers = _.sum(Game.creeps, (c) => c.memory.role == 'healer'
+    )
+    ;
+    var numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'eminer'
+    )
+    ;
+    var numberOfCargo = _.sum(Game.creeps, (c) => c.memory.role == 'cargo'
+    )
+    ;
+    var numberOfCouriers = _.sum(Game.creeps, (c) => c.memory.role == 'courier'
+    )
+    ;
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var name = undefined;
 
@@ -135,6 +167,10 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'wallRepairer');
     }
+    else if (numberOfSoldats < minimumNumberOfSoldats) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createCustomAttackCreep(energy, 'soldat');
+    }
     else if (numberOfMiners < minimumNumberOfMiners) {
         // try to spawn one
         name = Game.spawns.Spawn1.createMiner(energy, 'eminer');
@@ -147,25 +183,21 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createCourier(energy, 'courier');
     }
-    else if (numberOfSoldats < minimumNumberOfSoldats) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomAttackCreep(energy, 'soldat');
-    }
     else if (numberOfHealers < minimumNumberOfHealers) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomMedicCreep(energy, 'healer');
     }
+    else var claimflag = Game.flags['Reserve'].pos.roomName;
+    if (Game.rooms[claimflag]) {
+        if (Game.rooms[claimflag].controller.my == false) {
+            name = Game.spawns.Spawn1.createclaimer(energy, 'claimer')
+        }
+        else if (Game.rooms[claimflag].controller.my == true) {
+            if (Game.rooms[claimflag].controller.level <= 3) {
+                name = Game.spawns.Spawn1.createCustomCreep(energy, 'traveler')
+            }
+        }
 
-    else {
-        // else try to spawn a builder
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder');
+
     }
-
-    // print name to console if spawning was a success
-    // name > 0 would not work since string > 0 returns false
-    if (!(name < 0)) {
-        console.log("Spawned new creep: " + name);
-    }
-
-
 };

@@ -11,7 +11,10 @@ module.exports = {
             // switch state
             creep.memory.working = true;
         }
-
+                let droppedEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);  
+                    if (droppedEnergy.length >= 1) {
+                        creep.pickup(droppedEnergy[0]);
+                    }
         // find energy to pick up
         if (creep.memory.working == false) {
 

@@ -13,7 +13,10 @@ module.exports = {
             // switch state
             creep.memory.working = true;
         }
-
+                    let droppedEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);  
+                    if (droppedEnergy.length > 0) {
+                        creep.pickup(droppedEnergy[0]);
+                    }
         // if creep is supposed to repair something
         if (creep.memory.working == true) {
             // find all walls in the room
@@ -28,14 +31,14 @@ module.exports = {
             //   the lowwest percentage compared to max hits
             // Does not take into account how close it is
             for(let potentialTarget in walls) {
-                if((targets.hits / targets.hitsMax) < targetPercent) {
+                if((potentialTarget.hits / potentialTarget.hitsMax) < targetPercent) {
                     targetPercent = (potentialTarget.hits / potentialTarget.hitsMax);
                     target = potentialTarget;
                 }
             }
 
             // if we find a wall that has to be repaired
-            if (target != undefined) {
+            if (target) {
                 // try to repair it, if not in range
                 if (creep.repair(target) == ERR_NOT_IN_RANGE) {
                     // move towards it
@@ -49,13 +52,13 @@ module.exports = {
             }
         }
         // if creep is supposed to harvest energy from source
-        else {
+        if (creep.memory.working == false){
             // find closest source
             var conta = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
                     // the second argument for findClosestByPath is an object which takes
                     // a property called filter which can be a function
                     // we use the arrow operator to define it
-                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.energy >= 2
+                    filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] >=1
         });
             // try to harvest energy, if the source is not in range
             if (creep.withdraw(conta, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
