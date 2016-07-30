@@ -23,10 +23,12 @@ module.exports = {
 {
 var exitDir = Game.map.findExit(creep.room.name, invadeRoom);
 var Exit = creep.pos.findClosestByRange(exitDir);
-creep.moveTo(Exit), [{reusePath: 12}];
+creep.moveTo(Exit), [{reusePath: 3}];
 }
-else creep.moveTo(Game.flags.Attack)            
+            
         }
+else creep.moveTo(Game.flags.Attack)            
+        
 
 /*        else if (rampart.length > 0) {
             creep.moveTo(closestrampart);}*/

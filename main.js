@@ -193,7 +193,7 @@ module.exports.loop = function () {
             name = Game.spawns.Spawn1.createclaimer(energy, 'claimer')
         }
         else if (Game.rooms[claimflag].controller.my == true) {
-            if (Game.rooms[claimflag].controller.level <= 3) {
+            if (Game.rooms[claimflag].controller.level <= 2) {
                 name = Game.spawns.Spawn1.createCustomCreep(energy, 'traveler')
             }
         }
