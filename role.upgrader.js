@@ -11,6 +11,10 @@ module.exports = {
             // switch state
             creep.memory.working = true;
         }
+        let droppedEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);  
+                    if (droppedEnergy.length > 0) {
+                        creep.pickup(droppedEnergy[0]);
+                    }
 
         // if creep is supposed to transfer energy to the controller
         if (creep.memory.working == true) {

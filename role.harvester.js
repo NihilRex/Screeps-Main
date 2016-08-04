@@ -1,7 +1,8 @@
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
-        // if creep is bringing energy to the spawn or an extension but has no energy left
+        
+
         if (creep.memory.working == true && creep.carry.energy == 0) {
             // switch state
             creep.memory.working = false;
@@ -23,7 +24,7 @@ module.exports = {
                 // the second argument for findClosestByPath is an object which takes
                 // a property called filter which can be a function
                 // we use the arrow operator to define it
-                filter: (s) => s.energy < s.energyCapacity
+                filter: (s) => (s.energy < s.energyCapacity) //|| (s.store[RESOURCE_ENERGY] < s.storeCapacity[RESOURCE_ENERGY] && s.structureType == STRUCTURE_CONTAINER)
             });
 
             // if we found one
