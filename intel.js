@@ -28,7 +28,7 @@ module.exports = {
                 var sourceList = Game.rooms[room].find(FIND_SOURCES);
                 for (let i in sourceList) {
                     Memory.rooms[room].sources[sourceList[i].id] = sourceList[i].pos;
-                    Memory.rooms[room].sources[sourceList[i].roomName] = room;
+                    //Memory.rooms[room].sources[sourceList[i].roomName] = room;
                 }
             }
 

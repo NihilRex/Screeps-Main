@@ -1,7 +1,8 @@
 module.exports = {
     run: function(creep) {
+        if (Game.flags['Attack']){
         var invadeRoom = Game.flags['Attack'].pos.roomName;
-        var flag = Game.flags['Attack'].pos;
+        var flag = Game.flags['Attack'].pos;}
         var targ2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         var targ = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
 

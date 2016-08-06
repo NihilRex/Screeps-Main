@@ -1,3 +1,4 @@
+var roleCourier = require('role.courier');
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
@@ -37,5 +38,6 @@ module.exports = {
                     creep.moveTo(struct);
                 }
             }
+            else roleCourier.run(creep);
         }
     }};

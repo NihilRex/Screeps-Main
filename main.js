@@ -106,13 +106,14 @@ module.exports.loop = function () {
     var minimumNumberOfBuilders = 1;
     var minimumNumberOfRepairers = 1;
     var minimumNumberOfWallRepairers = 0;
-    var minimumNumberOfSoldats = 1;
+    var minimumNumberOfSoldats = 0;
     var minimumNumberOfHealers = 0;
     var minimumNumberOfCouriers = 2;
     var minimumNumberOfCargos = 1;
-    var minimumNumberOfMiners = 2;
+    var minimumNumberOfMiners = 3;
 
  for (roomName in Game.rooms){
+     
      var thisroom = Game.rooms[roomName]
      if (thisroom.controller.my == true) {
     // count the number of creeps alive for each role
@@ -176,11 +177,11 @@ module.exports.loop = function () {
     }
     else if (numberOfCargo < minimumNumberOfCargos) {
         // try to spawn one
-        name = SpawnT.createCourier(Game.spawns.Spawn1.room.energyAvailable, 'cargo');
+        name = SpawnT.createCourier(energy, 'cargo');
     }
     else if (numberOfCouriers < minimumNumberOfCouriers) {
         // try to spawn one
-        name = SpawnT.createCourier(Game.spawns.Spawn1.room.energyAvailable, 'courier');
+        name = SpawnT.createCourier(energy, 'courier');
     }
     // if not enough repairers
     else if (numberOfRepairers < minimumNumberOfRepairers) {
@@ -217,8 +218,8 @@ module.exports.loop = function () {
             }
         }
     }
-    var closeCreep = SpawnT.pos.findInRange(FIND_MY_CREEPS,1);
-    for (i in closeCreep) {SpawnT.renewCreep(closeCreep[i]);}
+    //var closeCreep = SpawnT.pos.findInRange(FIND_MY_CREEPS,1);
+    //for (i in closeCreep) {SpawnT.renewCreep(closeCreep[i]);}
 }
 
     }

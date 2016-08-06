@@ -1,3 +1,6 @@
+
+
+
 module.exports = function() {
     // create a new function for StructureSpawn
     StructureSpawn.prototype.createCustomCreep =
@@ -17,6 +20,6 @@ module.exports = function() {
             }
 
             // create creep with the created body and the given role
-            return this.createCreep(body, undefined, { role: roleName, working: false });
+            return this.createCreep(body, undefined,{ role: roleName, working: false });
         };
 };
