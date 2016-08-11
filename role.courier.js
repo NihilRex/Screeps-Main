@@ -31,7 +31,7 @@ module.exports = {
                 // try to transfer energy, if it is not in range
                 if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     // move towards it
-                    creep.moveTo(structure), [{reusePath:12}];
+                    creep.moveTo(structure), [{reusePath:7}];
                 }
             }
         }

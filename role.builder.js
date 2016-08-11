@@ -1,4 +1,5 @@
 var roleUpgrader = require('role.upgrader');
+var roleCargo = require('role.cargo');
 
 module.exports = {
     // a function to run the logic for this role
@@ -28,7 +29,7 @@ module.exports = {
             // if no constructionSite is found
             else {
                 // go upgrading the controller
-                roleUpgrader.run(creep);
+                roleUpgrader.run(creep); // turn to roleUpgrader when building up new rooms == roleCargo
             }
         }
         // if creep is supposed to harvest energy from source
@@ -38,7 +39,7 @@ module.exports = {
                     // the second argument for findClosestByPath is an object which takes
                     // a property called filter which can be a function
                     // we use the arrow operator to define it
-                    filter: (c) => c.structureType == STRUCTURE_CONTAINER && c.store[RESOURCE_ENERGY] > 50
+                    filter: (c) => (c.structureType == STRUCTURE_CONTAINER || c.structureType == STRUCTURE_STORAGE) && c.store[RESOURCE_ENERGY] > 50
         });
             // try to harvest energy, if the source is not in range
             if (creep.withdraw(conta, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

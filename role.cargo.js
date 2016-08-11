@@ -29,8 +29,12 @@ module.exports = {
         else {
             // find closest container
             var struct = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (s) => (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE) && s.store[RESOURCE_ENERGY] < s.storeCapacity
+                    filter: (s) => (s.structureType == STRUCTURE_STORAGE) && s.store[RESOURCE_ENERGY] < s.storeCapacity
         });
+            if (!struct) { var struct = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (s) => (s.structureType == STRUCTURE_CONTAINER) && s.store[RESOURCE_ENERGY] < s.storeCapacity
+        });}
+        
             if (struct){
                 // try to deposit energy, in containers
                 if (creep.transfer(struct, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

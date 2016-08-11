@@ -3,17 +3,21 @@ module.exports = {
         if (Game.flags['Attack']){
         var invadeRoom = Game.flags['Attack'].pos.roomName;
         var flag = Game.flags['Attack'].pos;}
-        var targ2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (s) => s.owner.username != 'Source Keeper'});
-        if (creep.room.controller){if (!creep.room.controller.my)
-        {var targ = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => s.structureType != STRUCTURE_KEEPER_LAIR && s.structureType != STRUCTURE_CONTROLLER && s.structureType != STRUCTURE_ROAD});}}
+        var targ2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS/*, {filter: (s) => s.owner.username != 'Source Keeper'}*/);
+        var targ = {}//creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => s.structureType != STRUCTURE_KEEPER_LAIR && s.structureType != STRUCTURE_CONTROLLER && s.structureType != STRUCTURE_ROAD && !s.my});
 
         if (targ2){
-            if (creep.attack(targ2) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targ2, {ignoreDestructibleStructures: true})
+            
+            if (creep.rangedAttack(targ2) == ERR_NOT_IN_RANGE) {
+                creep.rangedMassAttack();
+                if(creep.moveTo(targ2) == ERR_NO_PATH)
+					creep.moveTo(targ2, {ignoreDestructibleStructures: true,  ignoreCreeps:true })
             }
         }
         else if(targ){
-            if (creep.attack(targ) == ERR_NOT_IN_RANGE) {
+            
+            if (creep.rangedAttack(targ) == ERR_NOT_IN_RANGE) {
+                creep.rangedMassAttack();
                 if(creep.moveTo(targ) == ERR_NO_PATH)
 					creep.moveTo(targ, {ignoreDestructibleStructures: true})
             }
